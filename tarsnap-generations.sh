@@ -60,10 +60,6 @@ declare -i QUIET
 
 QUIET=0
 
-# remove space from the field delimeters that are used in the for loops
-# this allows for dir names with spaces
-IFS=$(echo -en "\n\b")
-
 #Get the command line arguments. Much nicer this way than $1, $2, etc. 
 while getopts ":f:h:d:w:m:q" opt ; do
 	case $opt in
@@ -143,6 +139,11 @@ fi
 if [ $QUIET != "1" ] ; then
     echo "Starting $BK_TYPE backups..."
 fi
+
+# remove space from the field delimiters that are used in the for loops
+# this allows to backup directory names with spaces
+OLD_IFS=$IFS
+IFS=$(echo -en "\n\b")
 
 for dir in $(cat $PATHS) ; do
 	tarsnap "${TARSNAP_ARGS[@]}" -c -f $NOW-$BK_TYPE-$HOSTNAME-$(echo ${dir//\//.}) --one-file-system -C / $dir
@@ -267,6 +268,10 @@ if [ $BK_TYPE = "MONTHLY" ] ; then
                 esac
         done
 fi
+
+# restore old IFS value
+IFS=$OLD_IFS
+
 if [ $QUIET != "1" ] ; then
     echo "$0 done"
 fi
