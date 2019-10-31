@@ -60,6 +60,10 @@ declare -i QUIET
 
 QUIET=0
 
+# remove space from the field delimeters that are used in the for loops
+# this allows for dir names with spaces
+IFS=$(echo -en "\n\b")
+
 #Get the command line arguments. Much nicer this way than $1, $2, etc. 
 while getopts ":f:h:d:w:m:q" opt ; do
 	case $opt in
