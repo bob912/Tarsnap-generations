@@ -187,7 +187,7 @@ if [ $BK_TYPE = "HOURLY" ] ; then
 			 "$HOURLY_DELETE_TIME-$BK_TYPE"* ) 	
 					case "$backup" in   #this case added to make sure the script doesn't delete the backup it just took. Case: '-h x' and backup takes > x hours. 
 						*"$NOW"* ) echo "Skipped $backup" ;;
-						* )  tarsnap -d -f $backup
+						* )  tarsnap "${TARSNAP_ARGS[@]}" -d -f $backup
 							if [ $? = 0 ] ; then
 							    if [ $QUIET != "1" ] ; then
               							echo "$backup snapshot deleted."
@@ -209,7 +209,7 @@ if [ $BK_TYPE = "DAILY" ] ; then
                          "$DAILY_DELETE_TIME-$BK_TYPE"* )
 					 case "$backup" in
                                                 *"$NOW"* ) echo "Skipped $backup" ;;
-                                                * )  tarsnap -d -f $backup
+                                                * )  tarsnap "${TARSNAP_ARGS[@]}" -d -f $backup
                                        			 if [ $? = 0 ] ; then
 							     if [ $QUIET != "1" ] ; then 
                                                 		echo "$backup snapshot deleted."
@@ -230,7 +230,7 @@ if [ $BK_TYPE = "WEEKLY" ] ; then
                          "$WEEKLY_DELETE_TIME-$BK_TYPE"* ) 
 					 case "$backup" in
                                                 *"$NOW"* ) echo "Skipped $backup" ;;
-                                                * ) tarsnap -d -f $backup
+                                                * ) tarsnap "${TARSNAP_ARGS[@]}" -d -f $backup
                                         		if [ $? = 0 ] ; then
 							    if [ $QUIET != "1" ] ; then
                                                 		echo "$backup snapshot deleted."
@@ -251,7 +251,7 @@ if [ $BK_TYPE = "MONTHLY" ] ; then
                          "$MONTHLY_DELETE_TIME-$BK_TYPE"* ) 
 					 case "$backup" in
                                                 *"$NOW"* ) echo "Skipped $backup" ;;
-                                                * ) tarsnap -d -f $backup
+                                                * ) tarsnap "${TARSNAP_ARGS[@]}" -d -f $backup
                                         		if [ $? = 0 ] ; then
 							    if [ $QUIET != "1" ] ; then
                                                 		echo "$backup snapshot deleted."
