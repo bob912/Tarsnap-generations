@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# turn on debug
+#exec 1>/tmp/tarsnap-generations_sh_trace.log 2>&1
+#set -o xtrace
+
 #See README @ https://github.com/bob912/Tarsnap-generations/blob/master/README
 
 #Forked from https://github.com/Gestas/Tarsnap-generations/ then modified for personal use cases.
