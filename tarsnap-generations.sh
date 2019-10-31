@@ -91,6 +91,15 @@ then
         exit 1
 fi
 
+TARSNAP_ARGS=()
+if [ $QUIET = "1" ]
+then
+	# Pass --quiet to suppress harmless tarsnap warnings
+	TARSNAP_ARGS+=( --quiet )
+	# Prevent stats output
+	TARSNAP_ARGS+=( --no-print-stats )
+fi
+
 #Check that $HOURLY_CNT, $DAILY_CNT, $WEEKLY_CNT, $MONTLY_CNT are numbers.
 if ( [ $HOURLY_CNT = 1 ] || [ $DAILY_CNT = 1 ] || [ $WEEKLY_CNT = 1 ] || [ $MONTHLY_CNT = 1 ] )
 then
@@ -134,7 +143,7 @@ if [ $QUIET != "1" ] ; then
 fi
 
 for dir in $(cat $PATHS) ; do
-	tarsnap -c -f $NOW-$BK_TYPE-$HOSTNAME-$(echo $dir) --one-file-system -C / $dir
+	tarsnap "${TARSNAP_ARGS[@]}" -c -f $NOW-$BK_TYPE-$HOSTNAME-$(echo $dir) --one-file-system -C / $dir
 	if [ $? = 0 ] ; then
 	    if [ $QUIET != "1" ] ; then
 		echo "$NOW-$BK_TYPE-$HOSTNAME-$(echo $dir) backup done."
