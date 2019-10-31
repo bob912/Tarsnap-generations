@@ -36,10 +36,19 @@ EOF
 
 if [[ `uname -s` = CYGWIN* ]]; then
 	HOSTNAME=`hostname`
+	#The last day of the current month. I wish there was a better way to do this, but this seems to work everywhere.
+	LDOM=$(echo $(cal -h) | awk '{print $NF}')
 elif [[ `uname -s` = OpenBSD* ]]; then
 	HOSTNAME=`hostname -s`
+	LDOM=$(echo $(cal) | awk '{print $NF}')
 else
-	HOSTNAME=`hostname -s`
+	if [[ `grep '^NAME' /etc/os-release | cut -f2 -d=` = Slackware ]]; then
+		#The last day of the current month. I wish there was a better way to do this, but this seems to work everywhere.
+		LDOM=$(echo $(cal --color=never) | awk '{print $NF}')
+	else
+		#The last day of the current month. I wish there was a better way to do this, but this seems to work everywhere.
+		LDOM=$(echo $(cal -h) | awk '{print $NF}')
+	fi
 fi
 
 #Declaring helps check for errors in the user-provided arguments. See line #69.
