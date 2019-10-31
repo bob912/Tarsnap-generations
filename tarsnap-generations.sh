@@ -40,18 +40,28 @@ For more information - http://github.com/Gestas/Tarsnap-generations/blob/master/
 EOF
 }
 
+cygwin_os=0
+openbsd_os=0
+slackware_os=0
+other_os=0
+
 if [[ `uname -s` = CYGWIN* ]]; then
+	cygwin_os=1
 	HOSTNAME=`hostname`
 	#The last day of the current month. I wish there was a better way to do this, but this seems to work everywhere.
 	LDOM=$(echo $(cal -h) | awk '{print $NF}')
 elif [[ `uname -s` = OpenBSD* ]]; then
+	openbsd_os=1
 	HOSTNAME=`hostname -s`
 	LDOM=$(echo $(cal) | awk '{print $NF}')
+	DADD_BIN=`which dadd`
 else
 	if [[ `grep '^NAME' /etc/os-release | cut -f2 -d=` = Slackware ]]; then
+		slackware_os=1
 		#The last day of the current month. I wish there was a better way to do this, but this seems to work everywhere.
 		LDOM=$(echo $(cal --color=never) | awk '{print $NF}')
 	else
+		other_os=1
 		#The last day of the current month. I wish there was a better way to do this, but this seems to work everywhere.
 		LDOM=$(echo $(cal -h) | awk '{print $NF}')
 	fi
@@ -181,10 +191,17 @@ for dir in $(cat $PATHS) ; do
 done
 
 #Delete old backups
-HOURLY_DELETE_TIME=$($DATE_BIN -d"-$HOURLY_CNT hour" +%Y%m%d-%H) 
-DAILY_DELETE_TIME=$($DATE_BIN -d"-$DAILY_CNT day" +%Y%m%d-%H)
-WEEKLY_DELETE_TIME=$($DATE_BIN -d"-$WEEKLY_CNT week" +%Y%m%d-%H)
-MONTHLY_DELETE_TIME=$($DATE_BIN -d"-$MONTHLY_CNT month" +%Y%m%d-%H)
+if [ $openbsd_os = "1" ] ; then
+	HOURLY_DELETE_TIME=$($DATE_BIN +%Y%m%d)-$($DADD_BIN -f %H $($DATE_BIN +%H:%M:%S) -${HOURLY_CNT}h)
+	DAILY_DELETE_TIME=$($DADD_BIN -f %Y%m%d $($DATE_BIN +%Y-%m-%d) -${DAILY_CNT}d)-$($DATE_BIN +%H)
+	WEEKLY_DELETE_TIME=$($DADD_BIN -f %Y%m%d $($DATE_BIN +%Y-%m-%d) -${WEEKLY_CNT}w)-$($DATE_BIN +%H)
+	MONTHLY_DELETE_TIME=$($DADD_BIN -f %Y%m%d $($DATE_BIN +%Y-%m-%d) -${MONTHLY_CNT}m)-$($DATE_BIN +%H)
+else
+	HOURLY_DELETE_TIME=$($DATE_BIN -d"-$HOURLY_CNT hour" +%Y%m%d-%H) 
+	DAILY_DELETE_TIME=$($DATE_BIN -d"-$DAILY_CNT day" +%Y%m%d-%H)
+	WEEKLY_DELETE_TIME=$($DATE_BIN -d"-$WEEKLY_CNT week" +%Y%m%d-%H)
+	MONTHLY_DELETE_TIME=$($DATE_BIN -d"-$MONTHLY_CNT month" +%Y%m%d-%H)
+fi
 
 if [ $QUIET != "1" ] ; then
     echo "Finding backups to be deleted."
