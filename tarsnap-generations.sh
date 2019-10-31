@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-#See README @ http://github.com/Gestas/Tarsnap-generations/blob/master/README
+#See README @ https://github.com/bob912/Tarsnap-generations/blob/master/README
+
+#Forked from https://github.com/Gestas/Tarsnap-generations/ then modified for personal use cases.
 
 #########################################################################################
 #What day of the week do you want to take the weekly snapshot? Default = Friday(5)	#
