@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # turn on debug
-#exec 1>/tmp/tarsnap-generations_sh_trace.log 2>&1
-#set -o xtrace
+exec 1>/tmp/tarsnap-generations_sh_trace.log 2>&1
+set -o xtrace
 
 #See README @ https://github.com/bob912/Tarsnap-generations/blob/master/README
 
@@ -58,10 +58,12 @@ elif [[ `uname -s` = OpenBSD* ]]; then
 else
 	if [[ `grep '^NAME' /etc/os-release | cut -f2 -d=` = Slackware ]]; then
 		slackware_os=1
+                HOSTNAME=`hostname -s`
 		#The last day of the current month. I wish there was a better way to do this, but this seems to work everywhere.
 		LDOM=$(echo $(cal --color=never) | awk '{print $NF}')
 	else
 		other_os=1
+                HOSTNAME=`hostname -s`
 		#The last day of the current month. I wish there was a better way to do this, but this seems to work everywhere.
 		LDOM=$(echo $(cal -h) | awk '{print $NF}')
 	fi
